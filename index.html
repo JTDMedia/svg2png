@@ -64,7 +64,7 @@
         function generateConverterUrl() {
             const svgUrl = document.getElementById('svg-url').value.trim();
             if (svgUrl) {
-                const converterUrl = `https://jtdmedia.github.io/svg2png/convert.html?url=${encodeURIComponent(svgUrl)}`;
+                const converterUrl = `https://jtdmedia.github.io/svg2png/convert.html?url=${svgUrl}`;
                 document.getElementById('generated-url').textContent = converterUrl;
             } else {
                 alert("Please enter a valid SVG URL.");
