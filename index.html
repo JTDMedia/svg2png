@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVG to PNG Converter - README</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0 auto;
+            padding: 20px;
+            max-width: 800px;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border: 1px solid #ddd;
+            overflow-x: auto;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <h1>SVG to PNG Converter</h1>
+    <div id="readme-content">Loading README...</div>
+
+    <script>
+        async function loadReadme() {
+            try {
+                const response = await fetch('https://api.github.com/repos/jtdmedia/svg2png/readme');
+                if (!response.ok) throw new Error('Failed to fetch README from GitHub API');
+                const data = await response.json();
+                const readmeContent = atob(data.content); // Decode the base64 encoded content
+
+                // Convert the Markdown content to HTML using marked.js
+                const htmlContent = marked(readmeContent);
+
+                // Display the HTML content in the page
+                document.getElementById('readme-content').innerHTML = htmlContent;
+            } catch (error) {
+                document.getElementById('readme-content').textContent = `Error: ${error.message}`;
+            }
+        }
+
+        loadReadme();
+    </script>
+</body>
+</html>
