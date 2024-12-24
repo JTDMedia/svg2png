@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVG to PNG Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        #error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>SVG to PNG Converter</h1>
+    <p>Converting your SVG to PNG...</p>
+    <canvas id="canvas" style="display: none;"></canvas>
+    <p id="error"></p>
+
+    <script>
+        async function convertSvgToPng() {
+            const params = new URLSearchParams(window.location.search);
+            const svgUrl = params.get('url');
+
+            if (!svgUrl) {
+                document.getElementById('error').textContent = 'Error: No SVG URL provided!';
+                return;
+            }
+
+            try {
+                // Fetch the SVG content
+                const response = await fetch(svgUrl);
+                if (!response.ok) throw new Error('Failed to fetch the SVG.');
+                const svgText = await response.text();
+
+                // Create an SVG image
+                const img = new Image();
+                const svgBlob = new Blob([svgText], { type: 'image/svg+xml' });
+                const svgBlobUrl = URL.createObjectURL(svgBlob);
+
+                img.onload = () => {
+                    // Create a canvas and draw the SVG
+                    const canvas = document.getElementById('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    ctx.drawImage(img, 0, 0);
+
+                    // Convert canvas to PNG
+                    canvas.toBlob(blob => {
+                        const pngUrl = URL.createObjectURL(blob);
+
+                        // Set meta tag for download
+                        const meta = document.createElement('meta');
+                        meta.httpEquiv = 'refresh';
+                        meta.content = `0;url=${pngUrl}`;
+                        document.head.appendChild(meta);
+
+                        // Optional: Link for fallback
+                        const link = document.createElement('a');
+                        link.href = pngUrl;
+                        link.download = 'converted.png';
+                        link.textContent = 'Click here if the download does not start automatically.';
+                        document.body.appendChild(link);
+                    }, 'image/png');
+                    URL.revokeObjectURL(svgBlobUrl);
+                };
+
+                img.onerror = () => {
+                    throw new Error('Failed to load the SVG image.');
+                };
+
+                img.src = svgBlobUrl;
+            } catch (error) {
+                document.getElementById('error').textContent = `Error: ${error.message}`;
+            }
+        }
+
+        convertSvgToPng();
+    </script>
+</body>
+</html>
