@@ -31,13 +31,17 @@
                 return;
             }
 
+            // Proxy server URL to bypass CORS
+            const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+
             try {
-                // Fetch the SVG content
-                const response = await fetch(svgUrl);
+                // Fetch the SVG content using the proxy
+                const response = await fetch(proxyUrl + svgUrl);
                 if (!response.ok) throw new Error('Failed to fetch the SVG.');
+
                 const svgText = await response.text();
 
-                // Create an SVG image
+                // Create an SVG image from the fetched SVG text
                 const img = new Image();
                 const svgBlob = new Blob([svgText], { type: 'image/svg+xml' });
                 const svgBlobUrl = URL.createObjectURL(svgBlob);
