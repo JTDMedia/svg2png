@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SVG to PNG Converter - README</title>
+    <title>SVG to PNG Converter</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -18,14 +18,29 @@
             border: 1px solid #ddd;
             overflow-x: auto;
         }
+        #svg-url-container {
+            margin-top: 20px;
+        }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
+        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <h1>SVG to PNG Converter</h1>
+    
+    <!-- Textbox to enter SVG URL -->
+    <div id="svg-url-container">
+        <label for="svg-url">Enter SVG URL: </label>
+        <input type="text" id="svg-url" placeholder="Paste your SVG URL here" style="width: 100%; padding: 8px;">
+        <button onclick="generateConverterUrl()" style="padding: 8px 16px; margin-top: 10px;">Generate Converter URL</button>
+    </div>
+
+    <h2>Generated Converter URL:</h2>
+    <p id="generated-url" style="word-wrap: break-word;"></p>
+
     <div id="readme-content">Loading README...</div>
 
     <script>
+        // Function to load the README file from GitHub API
         async function loadReadme() {
             try {
                 const response = await fetch('https://api.github.com/repos/jtdmedia/svg2png/readme');
@@ -44,6 +59,17 @@
         }
 
         loadReadme();
+
+        // Function to generate the converter URL
+        function generateConverterUrl() {
+            const svgUrl = document.getElementById('svg-url').value.trim();
+            if (svgUrl) {
+                const converterUrl = `https://jtdmedia.github.io/svg2png/convert.html?url=${encodeURIComponent(svgUrl)}`;
+                document.getElementById('generated-url').textContent = converterUrl;
+            } else {
+                alert("Please enter a valid SVG URL.");
+            }
+        }
     </script>
 </body>
 </html>
